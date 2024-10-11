@@ -2,15 +2,84 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Page avec CSS</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Formulaire de Soumission</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input, textarea, select, button {
+            margin-top: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("VOTRE_USER_ID"); // Remplacez VOTRE_USER_ID par votre user ID EmailJS
+        })();
+
+        function sendEmail(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('submission-form');
+            const formData = new FormData(form);
+            
+            const templateParams = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                category: formData.get('category'),
+                image_url: formData.get('image').name // Utilisation du nom de l'image pour le moment
+            };
+
+            emailjs.send('VOTRE_SERVICE_ID', 'VOTRE_TEMPLATE_ID', templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert('Formulaire soumis avec succès!');
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('Échec de la soumission du formulaire.');
+                });
+        }
+    </script>
 </head>
 <body>
-    <header>
-        <h1>Bienvenue sur ma page stylée</h1>
-    </header>
-    <main>
-        <p>Ceci est un paragraphe stylé avec CSS.</p>
-    </main>
+    <h1>Formulaire de Soumission</h1>
+    <form id="submission-form" onsubmit="sendEmail(event)">
+        <label for="title">Titre:</label>
+        <input type="text" id="title" name="title" required>
+        
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+        
+        <label for="category">Catégorie:</label>
+        <select id="category" name="category" required>
+            <option value="choix1">Choix 1</option>
+            <option value="choix2">Choix 2</option>
+        </select>
+        
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+        
+        <button type="submit">Soumettre</button>
+    </form>
 </body>
 </html>
